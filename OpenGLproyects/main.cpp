@@ -36,10 +36,18 @@ int main(int argc, char *argv[])
 {
     // glfw: initialize and configure
     // ------------------------------
+    if (!glfwInit())
+    {
+        std::cout << "Failed to initialize GLFW" << std::endl;
+        return -1;
+    }else{
+        std::cout << "si inicialiso GLFW" << std::endl;
+    }
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
 
     // glfw window creation
     // --------------------
@@ -49,6 +57,8 @@ int main(int argc, char *argv[])
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
+    }else{
+        std::cout << "si se creo windows" << std::endl;
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -59,6 +69,8 @@ int main(int argc, char *argv[])
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
+    }else{
+        std::cout << "si inicialiso glad" << std::endl;
     }
 
     glfwSetKeyCallback(window, glfw_onKey);
@@ -109,9 +121,9 @@ int main(int argc, char *argv[])
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-         -0.05f, -0.5f, 0.0f,  // bottom right
-          0.05f, -0.5f, 0.0f,  // bottom left
-          0.0f,  0.5f, 0.0f   // top 
+         -0.75f, -0.75f, 0.0f,  // bottom right
+          0.75f, -0.75f, 0.0f,  // bottom left
+          0.0f,  0.75f, 0.0f   // top 
     };
     /*
     float vertices2[] = {
@@ -133,19 +145,7 @@ int main(int argc, char *argv[])
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(VAO);
-    /*
-    //probando a crear el segundo triangulo
-    unsigned int VBO2, VAO2;
-    glGenVertexArrays(1, &VAO2);
-    glGenBuffers(1, &VBO2);
-    glBindVertexArray(VAO2);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(VAO2);
-    //
-    */
+    
     uniID = glGetUniformLocation(shaderProgram, "scale");
     printf("uniID: %d\n", uniID);
     int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
@@ -163,25 +163,11 @@ int main(int argc, char *argv[])
         colorTriangle();
         // update shader uniform
                 // render the triangle
-            
+        std::cout<<"antes"<<std::endl;    
         glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        //DIbujar el segundo triangulo
-        /*
-        glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-        // Re-enable vertex attributes if needed (assuming your shader uses specific attributes)
-        glEnableVertexAttribArray(0); // Example: re-enable position attribute
-
-        // Set a different color for the second triangle (optional)
-        colorTriangle(); // Example: set red color
-
-        // Draw the second triangle
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        //fin de la creacion del segundo triangulo
-        */
+        
         glfwSwapBuffers(window);
+        std::cout<<"despues"<<std::endl; 
         glfwPollEvents();
     }
 
