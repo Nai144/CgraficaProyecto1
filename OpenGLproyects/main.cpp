@@ -1,8 +1,9 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
-//#include <GL/glut.h>
+#include <GL/glut.h>
 #include <iostream>
 #include <cmath>
+#include "Circle.h"
 
 using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -31,7 +32,7 @@ const char *fragmentShaderSource = "#version 410 core\n"
 unsigned int shaderProgram;
 GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
-
+Circle circle(30,0.5f,0.0f,0.0f,0.0f); 
 int main(int argc, char *argv[])
 {
     // glfw: initialize and configure
@@ -57,8 +58,6 @@ int main(int argc, char *argv[])
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
-    }else{
-        std::cout << "si se creo windows" << std::endl;
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -69,8 +68,6 @@ int main(int argc, char *argv[])
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
-    }else{
-        std::cout << "si inicialiso glad" << std::endl;
     }
 
     glfwSetKeyCallback(window, glfw_onKey);
@@ -120,18 +117,35 @@ int main(int argc, char *argv[])
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    float vertices[] = {
+    /*float vertices[] = {
          -0.75f, -0.75f, 0.0f,  // bottom right
           0.75f, -0.75f, 0.0f,  // bottom left
           0.0f,  0.75f, 0.0f   // top 
-    };
+    };*/
     /*
     float vertices2[] = {
          -0.5f, -0.05f, 0.0f,  // bottom right
           0.5f, -0.05f, 0.0f,  // bottom left
           0.0f,  0.5f, 0.0f   // top 
     };
+    *//*
+    const int numSegments = 30; // Number of segments in the circle
+    float radius = 0.5f;
+    float vertices[numSegments * 3]; // Each vertex has 3 coordinates
+
+    // Calculate vertices for the circle
+    for (int i = 0; i < numSegments; ++i) {
+        float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
+        float x = radius * cosf(theta);
+        float y = radius * sinf(theta);
+        vertices[i * 3] = x;
+        vertices[i * 3 + 1] = y;
+        vertices[i * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
+    }
     */
+   float vertices[circle.GetNumOfSegments() * 3];
+    circle.PositionOfVertices(vertices);
+
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -162,12 +176,10 @@ int main(int argc, char *argv[])
         glUniform1f(uniID, escala);
         colorTriangle();
         // update shader uniform
-                // render the triangle
-        std::cout<<"antes"<<std::endl;    
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+                // render the triangle   
+        glDrawArrays(GL_TRIANGLE_FAN, 0, circle.GetNumOfSegments());
         
         glfwSwapBuffers(window);
-        std::cout<<"despues"<<std::endl; 
         glfwPollEvents();
     }
 
@@ -192,14 +204,16 @@ int main(int argc, char *argv[])
 void colorTriangle(){
     double  timeValue = glfwGetTime();
     float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+    float redValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
+    float blueValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
     int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-    /*
-    if (vertexColorLocation >=0)
-       cout << "Ubicación Color " << vertexColorLocation << "\n";
-    else
-       cout << "Ubicación Color No Encontrada" << "\n";
-    */
-    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+    
+    //if (vertexColorLocation >=0)
+    //  cout << "Ubicación Color " << vertexColorLocation << "\n";
+    //else
+    //   cout << "Ubicación Color No Encontrada" << "\n";
+    
+    glUniform4f( vertexColorLocation,redValue , greenValue, 0.0f, 1.0f);
 }
 
 void sizeTriangle(int op){
@@ -212,13 +226,24 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 		glfwSetWindowShouldClose(window, GL_TRUE);
     
+    /*
     if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
         colorTriangle();
+    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+        colorTriangle();
+    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+        colorTriangle();
+    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+        colorTriangle();
+    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+        colorTriangle();
+    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+        colorTriangle();*/
 
-    if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
+    if (key == GLFW_KEY_A && action == GLFW_RELEASE)
         sizeTriangle(1);
     
-    if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
+    if (key == GLFW_KEY_B && action == GLFW_RELEASE)
         sizeTriangle(-1);
 
 }
