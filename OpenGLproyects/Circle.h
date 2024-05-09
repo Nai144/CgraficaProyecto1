@@ -3,9 +3,12 @@
 
 class Circle{
 
-    //valores de los colores
+    //cantidad de segmentaciones
     int numSegments;
-    float radius,red,green,blue;
+    //radio del circulo
+    float radius;
+    //valores de los colores
+    float red,green,blue;
 
     public:
 
@@ -14,6 +17,7 @@ class Circle{
 
     void ModifyColor(int color, int vertexColorLocation);
     void PositionOfVertices(float vertices[]);
+    void Scale();
     int GetNumOfSegments();
 
 

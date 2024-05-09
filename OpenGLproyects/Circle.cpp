@@ -6,6 +6,9 @@
 #include <cmath>
 
 
+
+
+
 Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _blue){
     numSegments=_numSegments;
     radius=_radius;
@@ -26,26 +29,32 @@ void Circle::PositionOfVertices(float vertices[]){
     }
 
 }
-void Circle::ModifyColor(int color,int vertexColorLocation){
+void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
 
-    switch (color)
+    switch (GLFW_KEY)
     {
-    case 1:
+    case GLFW_KEY_1:
+        if(red<=1.0f)
         red+=0.1f;
         break;
-    case 2:
+    case GLFW_KEY_2:
+    if(green<=1.0f)
         green+=0.1f;
         break;
-    case 3:
+    case GLFW_KEY_3:
+    if(blue<=1.0f)
         blue+=0.1f;
         break;
-    case 4:
+    case GLFW_KEY_4:
+        if(red>=0.1f)
         red-=0.1f;
         break;
-    case 5:
+    case GLFW_KEY_5:
+    if(green>=0.1f)
         green-=0.1f;
         break;
-    case 6:
+    case GLFW_KEY_6:
+    if(blue>=0.1f)
         blue-=0.1f;
         break;
     default:

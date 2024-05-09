@@ -32,7 +32,7 @@ const char *fragmentShaderSource = "#version 410 core\n"
 unsigned int shaderProgram;
 GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
-Circle circle(30,0.5f,0.0f,0.0f,0.0f); 
+Circle circle(30,0.5f,1.0f,0.0f,0.0f); 
 int main(int argc, char *argv[])
 {
     // glfw: initialize and configure
@@ -174,8 +174,9 @@ int main(int argc, char *argv[])
         // be sure to activate the shader before any calls to glUniform
         glUseProgram(shaderProgram);
         glUniform1f(uniID, escala);
-        colorTriangle();
+        //colorTriangle();
         // update shader uniform
+        circle.ModifyColor(0,glGetUniformLocation(shaderProgram, "ourColor"));
                 // render the triangle   
         glDrawArrays(GL_TRIANGLE_FAN, 0, circle.GetNumOfSegments());
         
@@ -200,7 +201,7 @@ int main(int argc, char *argv[])
     glfwTerminate();
     return 0;
 }
-
+/*
 void colorTriangle(){
     double  timeValue = glfwGetTime();
     float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
@@ -215,7 +216,7 @@ void colorTriangle(){
     
     glUniform4f( vertexColorLocation,redValue , greenValue, 0.0f, 1.0f);
 }
-
+*/
 void sizeTriangle(int op){
     escala += op*aumento;
     glUniform1f(uniID, escala);
@@ -226,19 +227,12 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 		glfwSetWindowShouldClose(window, GL_TRUE);
     
-    /*
-    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-        colorTriangle();
-    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-        colorTriangle();
-    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-        colorTriangle();
-    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-        colorTriangle();
-    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-        colorTriangle();
-    if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
-        colorTriangle();*/
+    if((key == GLFW_KEY_1 && action == GLFW_RELEASE)||(key == GLFW_KEY_2 && action == GLFW_RELEASE)||
+       (key == GLFW_KEY_3 && action == GLFW_RELEASE)||(key == GLFW_KEY_4 && action == GLFW_RELEASE)||
+       (key == GLFW_KEY_5 && action == GLFW_RELEASE)||(key == GLFW_KEY_6 && action == GLFW_RELEASE)){
+        circle.ModifyColor(key,glGetUniformLocation(shaderProgram, "ourColor"));
+    }
+    
 
     if (key == GLFW_KEY_A && action == GLFW_RELEASE)
         sizeTriangle(1);
