@@ -112,38 +112,8 @@ int main(int argc, char *argv[])
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
-//    glDeleteShader(vertexShader);
-//    glDeleteShader(fragmentShader);
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    /*float vertices[] = {
-         -0.75f, -0.75f, 0.0f,  // bottom right
-          0.75f, -0.75f, 0.0f,  // bottom left
-          0.0f,  0.75f, 0.0f   // top 
-    };*/
-    /*
-    float vertices2[] = {
-         -0.5f, -0.05f, 0.0f,  // bottom right
-          0.5f, -0.05f, 0.0f,  // bottom left
-          0.0f,  0.5f, 0.0f   // top 
-    };
-    *//*
-    const int numSegments = 30; // Number of segments in the circle
-    float radius = 0.5f;
-    float vertices[numSegments * 3]; // Each vertex has 3 coordinates
-
-    // Calculate vertices for the circle
-    for (int i = 0; i < numSegments; ++i) {
-        float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
-        float x = radius * cosf(theta);
-        float y = radius * sinf(theta);
-        vertices[i * 3] = x;
-        vertices[i * 3 + 1] = y;
-        vertices[i * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
-    }
-    */
-   float vertices[circle.GetNumOfSegments() * 3];
+    float vertices[circle.GetNumOfSegments() * 3];
     circle.PositionOfVertices(vertices);
 
     unsigned int VBO, VAO;
@@ -173,7 +143,7 @@ int main(int argc, char *argv[])
 
         // be sure to activate the shader before any calls to glUniform
         glUseProgram(shaderProgram);
-        glUniform1f(uniID, escala);
+        glUniform1f(uniID, circle.GetScale());
         //colorTriangle();
         // update shader uniform
         circle.ModifyColor(0,glGetUniformLocation(shaderProgram, "ourColor"));
@@ -235,10 +205,11 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
     
 
     if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-        sizeTriangle(1);
+        circle.Scale(uniID,1);
+        
     
     if (key == GLFW_KEY_B && action == GLFW_RELEASE)
-        sizeTriangle(-1);
+        circle.Scale(uniID,-1);
 
 }
 

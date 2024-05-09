@@ -15,6 +15,7 @@ Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _
     red=_red;
     green=_green;
     blue=_blue;
+    scale=1.0f;
 }
 
 void Circle::PositionOfVertices(float vertices[]){
@@ -61,7 +62,17 @@ void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
         break;
     }
     
+
     glUniform4f( vertexColorLocation,red , green, blue, 1.0f);
+}
+void Circle::Scale(GLuint uniID,int op){
+    
+    GLfloat aumento=0.1f;
+    scale += op*aumento;
+    glUniform1f(uniID, scale);
+}
+GLfloat Circle::GetScale(){
+    return scale;
 }
 int Circle::GetNumOfSegments(){
     return numSegments;
