@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "glad/glad.h"
 
 class Circle{
 
@@ -10,6 +10,8 @@ class Circle{
     //valores de los colores
     float red,green,blue;
 
+    GLfloat scale;
+
     public:
 
     Circle();
@@ -17,7 +19,8 @@ class Circle{
 
     void ModifyColor(int color, int vertexColorLocation);
     void PositionOfVertices(float vertices[]);
-    void Scale();
+    void Scale(GLuint uniID,int op);
+    GLfloat GetScale();
     int GetNumOfSegments();
 
 

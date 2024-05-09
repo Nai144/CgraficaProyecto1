@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include "Circle.h"
+#include "OpenGlShadder.h"
 
 using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -33,10 +34,13 @@ unsigned int shaderProgram;
 GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
 Circle circle(30,0.5f,1.0f,0.0f,0.0f); 
+//OpenGlShadder shader(vertexShaderSource,fragmentShaderSource);
 int main(int argc, char *argv[])
 {
+
     // glfw: initialize and configure
     // ------------------------------
+   
     if (!glfwInit())
     {
         std::cout << "Failed to initialize GLFW" << std::endl;
@@ -72,10 +76,11 @@ int main(int argc, char *argv[])
 
     glfwSetKeyCallback(window, glfw_onKey);
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
+    OpenGlShadder shader(vertexShaderSource,fragmentShaderSource);
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -143,7 +148,9 @@ int main(int argc, char *argv[])
         vertices[i * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
     }
     */
-   float vertices[circle.GetNumOfSegments() * 3];
+
+    float vertices[circle.GetNumOfSegments() * 3];
+
     circle.PositionOfVertices(vertices);
 
     unsigned int VBO, VAO;
@@ -161,10 +168,10 @@ int main(int argc, char *argv[])
     glBindVertexArray(VAO);
     
     uniID = glGetUniformLocation(shaderProgram, "scale");
-    printf("uniID: %d\n", uniID);
+    printf("uniID: %d\n", shader.GetID());
     int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-    printf("ourColor: %d\n", vertexColorLocation);
- 
+    printf("ourColor: %d\n", shader.GetIDColor());
+    
     while (!glfwWindowShouldClose(window))
     {
         // render
@@ -172,11 +179,22 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
         // be sure to activate the shader before any calls to glUniform
+
         glUseProgram(shaderProgram);
         glUniform1f(uniID, escala);
         //colorTriangle();
+
+        //Codigo normal
+        //glUseProgram(shaderProgram);
+        //glUniform1f(uniID, circle.GetScale());
+        //Codigo con clase OpenGlShadder
+        shader.Use(circle.GetScale());
+
         // update shader uniform
-        circle.ModifyColor(0,glGetUniformLocation(shaderProgram, "ourColor"));
+        //Codigo normal
+        //circle.ModifyColor(0,glGetUniformLocation(shaderProgram, "ourColor"));
+        //Codigo con clase OpenGlShadder
+        circle.ModifyColor(0,shader.GetIDColor());
                 // render the triangle   
         glDrawArrays(GL_TRIANGLE_FAN, 0, circle.GetNumOfSegments());
         
@@ -192,10 +210,10 @@ int main(int argc, char *argv[])
     //lineas para eliminar el segundo triangulo 
  //   glDeleteVertexArrays(1, &VAO2);
    // glDeleteBuffers(1, &VBO2);
-    //
-
-    glDeleteProgram(shaderProgram);
-
+    //Codigo normal
+    //glDeleteProgram(shaderProgram);
+    //Codigo del codigo
+    shader.DeleteProgram();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
@@ -217,10 +235,7 @@ void colorTriangle(){
     glUniform4f( vertexColorLocation,redValue , greenValue, 0.0f, 1.0f);
 }
 */
-void sizeTriangle(int op){
-    escala += op*aumento;
-    glUniform1f(uniID, escala);
-}
+
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -230,15 +245,17 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
     if((key == GLFW_KEY_1 && action == GLFW_RELEASE)||(key == GLFW_KEY_2 && action == GLFW_RELEASE)||
        (key == GLFW_KEY_3 && action == GLFW_RELEASE)||(key == GLFW_KEY_4 && action == GLFW_RELEASE)||
        (key == GLFW_KEY_5 && action == GLFW_RELEASE)||(key == GLFW_KEY_6 && action == GLFW_RELEASE)){
-        circle.ModifyColor(key,glGetUniformLocation(shaderProgram, "ourColor"));
+        //circle.ModifyColor(key,shader.GetIDColor());
     }
     
 
-    if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-        sizeTriangle(1);
+    if (key == GLFW_KEY_A && action == GLFW_RELEASE){}
+        //sizeTriangle(1);
+        circle.Scale(uniID,-1);
     
-    if (key == GLFW_KEY_B && action == GLFW_RELEASE)
-        sizeTriangle(-1);
+    if (key == GLFW_KEY_B && action == GLFW_RELEASE){}
+        //sizeTriangle(-1);
+        circle.Scale(uniID,-1);
 
 }
 
