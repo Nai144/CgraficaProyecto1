@@ -16,5 +16,4 @@ class OpenGlShadder{
     void DeleteProgram();
     GLuint GetID();
     int GetIDColor();
-    ~OpenGlShadder();
 };

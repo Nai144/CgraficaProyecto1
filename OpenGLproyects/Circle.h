@@ -9,7 +9,7 @@ class Circle{
     float radius;
     //valores de los colores
     float red,green,blue;
-
+    //valores de la escala
     GLfloat scale;
 
     public:

@@ -30,11 +30,11 @@ const char *fragmentShaderSource = "#version 410 core\n"
     "{\n"
     "   FragColor = ourColor;\n"
     "}\n\0";
+
 int vertexColorLocation;
-GLuint uniID, ourColorID;
+GLuint uniID;
 GLfloat escala = 1.0f, aumento = 0.1f;
 Circle circle(30,0.5f,1.0f,0.0f,0.0f); 
-//OpenGlShadder shader(vertexShaderSource,fragmentShaderSource);
 int main(int argc, char *argv[])
 {
 

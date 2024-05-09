@@ -73,6 +73,3 @@ void OpenGlShadder::DeleteProgram(){
     glDeleteProgram(shaderProgram);
 }
 
-OpenGlShadder::~OpenGlShadder(){
-
-}
