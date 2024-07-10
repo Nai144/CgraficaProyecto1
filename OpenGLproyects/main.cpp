@@ -9,31 +9,13 @@
 using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
-void colorTriangle();
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-const char *vertexShaderSource ="#version 410 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform float scale;\n"
-    "void main()\n"
-    "{\n"
-    "gl_Position = vec4(aPos*scale, 1.0);\n"
-    "}\n\0";
-
-const char *fragmentShaderSource = "#version 410 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = ourColor;\n"
-    "}\n\0";
-
 int vertexColorLocation;
 GLuint uniID;
-GLfloat escala = 1.0f, aumento = 0.1f;
 Circle circle(30,0.5f,1.0f,0.0f,0.0f); 
 int main(int argc, char *argv[])
 {
@@ -45,9 +27,7 @@ int main(int argc, char *argv[])
     {
         std::cout << "Failed to initialize GLFW" << std::endl;
         return -1;
-    }else{
-        std::cout << "si inicialiso GLFW" << std::endl;
-    }
+    }else
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -80,7 +60,7 @@ int main(int argc, char *argv[])
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
-    OpenGlShadder shader(vertexShaderSource,fragmentShaderSource);
+    OpenGlShadder shader;
 
     float vertices[circle.GetNumOfSegments() * 3];
 
@@ -99,7 +79,7 @@ int main(int argc, char *argv[])
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(VAO);
-    
+  
     uniID = shader.GetID();
 
     vertexColorLocation = shader.GetIDColor();
@@ -110,7 +90,6 @@ int main(int argc, char *argv[])
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // be sure to activate the shader before any calls to glUniform
         shader.Use(circle.GetScale());
 
         circle.ModifyColor(0,shader.GetIDColor());
@@ -121,7 +100,7 @@ int main(int argc, char *argv[])
         glfwPollEvents();
     }
 
-    // optional: de-allocate all resources once they've outlived their purpose:
+    // opcional: desasignar todos los recursos una vez que hayan superado su proposito:
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -143,7 +122,7 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
         circle.ModifyColor(key,vertexColorLocation);
     }
     if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-       circle.Scale(uniID,-1);
+       circle.Scale(uniID,1);
     
     if (key == GLFW_KEY_B && action == GLFW_RELEASE)
         circle.Scale(uniID,-1);

@@ -4,10 +4,24 @@
 #include "glad/glad.h"
 #include <iostream>
 
-OpenGlShadder::OpenGlShadder(const char *_vertexShaderSource,const char *_fragmentShaderSource){
+OpenGlShadder::OpenGlShadder(){
 
-    vertexShaderSource=_vertexShaderSource;
-    fragmentShaderSource=_fragmentShaderSource;
+    const char *vertexShaderSource ="#version 410 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "uniform float scale;\n"
+    "void main()\n"
+    "{\n"
+    "gl_Position = vec4(aPos+scale, 1.0);\n"
+    "}\n\0";
+
+const char *fragmentShaderSource = "#version 410 core\n"
+    "out vec4 FragColor;\n"
+    "uniform vec4 ourColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = ourColor;\n"
+    "}\n\0";
+
     
     // build and compile our shader program
     // ------------------------------------
@@ -17,7 +31,7 @@ OpenGlShadder::OpenGlShadder(const char *_vertexShaderSource,const char *_fragme
         std::cout << "Failed to initialize GLAD" << std::endl;
         
     }
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
     // check for shader compile errors
@@ -30,7 +44,7 @@ OpenGlShadder::OpenGlShadder(const char *_vertexShaderSource,const char *_fragme
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
     // fragment shader
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
     // check for shader compile errors
@@ -58,11 +72,12 @@ OpenGlShadder::OpenGlShadder(const char *_vertexShaderSource,const char *_fragme
 
 }
 
-void OpenGlShadder::Use(GLfloat circle){
+void OpenGlShadder::Use(GLfloat circleScale){
+    // asegúrese de activar el sombreador antes de cualquier llamada a glUniform
     glUseProgram(shaderProgram);
-    glUniform1f(glGetUniformLocation(shaderProgram, "scale"), circle);
+    glUniform1f(glGetUniformLocation(shaderProgram, "scale"), circleScale);
 }
-
+//
 GLuint OpenGlShadder::GetID(){
     return glGetUniformLocation(shaderProgram, "scale");
 }

@@ -83,3 +83,6 @@ GLfloat Circle::GetScale(){
 int Circle::GetNumOfSegments(){
     return numSegments;
 }
+Circle::~Circle(){
+    
+}

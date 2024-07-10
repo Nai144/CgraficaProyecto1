@@ -22,7 +22,7 @@ class Circle{
     void Scale(GLuint uniID,int op);
     GLfloat GetScale();
     int GetNumOfSegments();
-
+    ~Circle();
 
 
 };
