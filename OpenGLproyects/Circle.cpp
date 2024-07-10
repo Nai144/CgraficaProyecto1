@@ -19,16 +19,52 @@ Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _
 }
 
 void Circle::PositionOfVertices(float vertices[]){
+    int numeroCirculos =12;
 
+    int M,N;
+
+    if(numeroCirculos %2 !=0)
+    numeroCirculos++;
+
+    for(M=0; M < numeroCirculos; M++)
+    {
+        for(N=0; N < numeroCirculos; N++)
+        {
+            if(N*M==numeroCirculos)
+            {
+                break;
+            }
+
+        }
+    }
+
+    for(int i=0; i < M; i++)
+    {
+        for(int j=0; j < N; j++)
+        {
+            for (int k = 0; k < numSegments; ++k)
+            {
+                float theta = 2.0f * 3.1415926f * float(k) / float(numSegments);
+                float x = radius * cosf(theta);
+                float y = radius * sinf(theta);
+                vertices[k * 3] = x + ((1/M)*i);
+                vertices[k * 3 + 1] = y +((1/N)*j);
+                vertices[k * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
+            }
+
+        }
+    }
+
+    /*
     for (int i = 0; i < numSegments; ++i) {
         float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
         float x = radius * cosf(theta);
         float y = radius * sinf(theta);
-        vertices[i * 3] = x;
+        vertices[i * 3] = x +0.1;
         vertices[i * 3 + 1] = y;
         vertices[i * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
     }
-
+    */
 }
 void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
 
