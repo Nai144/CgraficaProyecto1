@@ -18,53 +18,20 @@ Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _
     scale=1.0f;
 }
 
-void Circle::PositionOfVertices(float vertices[]){
-    int numeroCirculos =12;
-
-    int M,N;
-
-    if(numeroCirculos %2 !=0)
-    numeroCirculos++;
-
-    for(M=0; M < numeroCirculos; M++)
-    {
-        for(N=0; N < numeroCirculos; N++)
-        {
-            if(N*M==numeroCirculos)
-            {
-                break;
-            }
-
+void Circle::PositionOfVertices(float* vertices, int numCircles, float offsetX, float offsetY) {
+    int vertexIndex = 0;
+    for (int i = 0; i < numCircles; ++i) {
+        float xOffset = (i % 3) * offsetX;  // Ajustar la posición en X
+        float yOffset = (i / 3) * offsetY;  // Ajustar la posición en Y
+        for (int j = 0; j < numSegments; ++j) {
+            float theta = 2.0f * 3.1415926f * float(j) / float(numSegments);
+            float x = radius * cosf(theta);
+            float y = radius * sinf(theta);
+            vertices[vertexIndex++] = x + xOffset;
+            vertices[vertexIndex++] = y + yOffset;
+            vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
         }
     }
-
-    for(int i=0; i < M; i++)
-    {
-        for(int j=0; j < N; j++)
-        {
-            for (int k = 0; k < numSegments; ++k)
-            {
-                float theta = 2.0f * 3.1415926f * float(k) / float(numSegments);
-                float x = radius * cosf(theta);
-                float y = radius * sinf(theta);
-                vertices[k * 3] = x + ((1/M)*i);
-                vertices[k * 3 + 1] = y +((1/N)*j);
-                vertices[k * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
-            }
-
-        }
-    }
-
-    /*
-    for (int i = 0; i < numSegments; ++i) {
-        float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
-        float x = radius * cosf(theta);
-        float y = radius * sinf(theta);
-        vertices[i * 3] = x +0.1;
-        vertices[i * 3 + 1] = y;
-        vertices[i * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
-    }
-    */
 }
 void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
 

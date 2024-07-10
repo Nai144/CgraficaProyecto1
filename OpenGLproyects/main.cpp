@@ -11,8 +11,8 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 void colorTriangle();
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1080;
+const unsigned int SCR_HEIGHT = 920;
 
 const char *vertexShaderSource ="#version 410 core\n"
     "layout (location = 0) in vec3 aPos;\n"
@@ -32,7 +32,8 @@ const char *fragmentShaderSource = "#version 410 core\n"
 unsigned int shaderProgram;
 GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
-Circle circle(30,0.5f,1.0f,0.0f,0.0f); 
+Circle circle(30,0.25f,1.0f,0.0f,0.0f); 
+int numCircles = 16; // Número de círculos a dibujar
 int main(int argc, char *argv[])
 {
     // glfw: initialize and configure
@@ -113,8 +114,9 @@ int main(int argc, char *argv[])
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
 
-    float vertices[circle.GetNumOfSegments() * 3];
-    circle.PositionOfVertices(vertices);
+    int numVertices = circle.GetNumOfSegments() * numCircles;
+    float* vertices = new float[numVertices * 3];
+    circle.PositionOfVertices(vertices, numCircles, 0.5f, 0.5f);
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -123,7 +125,8 @@ int main(int argc, char *argv[])
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
+   
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -148,8 +151,11 @@ int main(int argc, char *argv[])
         // update shader uniform
         circle.ModifyColor(0,glGetUniformLocation(shaderProgram, "ourColor"));
                 // render the triangle   
-        glDrawArrays(GL_TRIANGLE_FAN, 0, circle.GetNumOfSegments());
-        
+        for (int i = 0; i < numCircles; ++i) {
+            glDrawArrays(GL_TRIANGLE_FAN, i * circle.GetNumOfSegments(), circle.GetNumOfSegments());
+        }
+       
+        //glDrawElements(GL_TRIANGLE_FAN, 12, circle.GetNumOfSegments(),0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -171,22 +177,7 @@ int main(int argc, char *argv[])
     glfwTerminate();
     return 0;
 }
-/*
-void colorTriangle(){
-    double  timeValue = glfwGetTime();
-    float greenValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
-    float redValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
-    float blueValue = static_cast<float>(sin(timeValue) / 2.0 + 0.5);
-    int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-    
-    //if (vertexColorLocation >=0)
-    //  cout << "Ubicación Color " << vertexColorLocation << "\n";
-    //else
-    //   cout << "Ubicación Color No Encontrada" << "\n";
-    
-    glUniform4f( vertexColorLocation,redValue , greenValue, 0.0f, 1.0f);
-}
-*/
+
 void sizeTriangle(int op){
     escala += op*aumento;
     glUniform1f(uniID, escala);
