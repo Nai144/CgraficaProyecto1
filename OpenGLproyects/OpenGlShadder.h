@@ -4,7 +4,7 @@
 class OpenGlShadder{
 
     unsigned int shaderProgram;
-    
+
     public:
 
     OpenGlShadder();
@@ -12,6 +12,6 @@ class OpenGlShadder{
     void DeleteProgram();
     GLuint GetID();
     int GetIDColor();
+    void UseLocation(int offsetX, int offsetY);
+    int GetIDOffset();
 };
-
-

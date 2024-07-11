@@ -6,12 +6,13 @@
 
 OpenGlShadder::OpenGlShadder(){
 
-    const char *vertexShaderSource ="#version 410 core\n"
+const char *vertexShaderSource ="#version 410 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "uniform float scale;\n"
+    "uniform vec2 offset;\n"
     "void main()\n"
     "{\n"
-    "gl_Position = vec4(aPos+scale, 1.0);\n"
+    "gl_Position = vec4(aPos * scale + vec3(offset, 0.0), 1.0);\n"
     "}\n\0";
 
 const char *fragmentShaderSource = "#version 410 core\n"
@@ -73,7 +74,7 @@ const char *fragmentShaderSource = "#version 410 core\n"
 }
 
 void OpenGlShadder::Use(GLfloat circleScale){
-    // asegúrese de activar el sombreador antes de cualquier llamada a glUniform
+    // asegÃºrese de activar el sombreador antes de cualquier llamada a glUniform
     glUseProgram(shaderProgram);
     glUniform1f(glGetUniformLocation(shaderProgram, "scale"), circleScale);
 }
@@ -88,3 +89,12 @@ void OpenGlShadder::DeleteProgram(){
     glDeleteProgram(shaderProgram);
 }
 
+void OpenGlShadder::UseLocation(int offsetX, int offsetY)
+{   
+    glUniform2f(glGetUniformLocation(shaderProgram, "offset"), offsetX, offsetY);
+
+}
+
+int OpenGlShadder::GetIDOffset(){
+    return glGetUniformLocation(shaderProgram, "offset");
+}
