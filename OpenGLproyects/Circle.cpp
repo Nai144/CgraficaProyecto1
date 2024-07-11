@@ -3,18 +3,25 @@
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
 #include <iostream>
+
 #include <cmath>
+#include <random>
 
 
 
 
 
-Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _blue){
+Circle::Circle(int _numSegments, float _radius){
     numSegments=_numSegments;
     radius=_radius;
-    red=_red;
-    green=_green;
-    blue=_blue;
+    std::random_device rd;
+    std::mt19937 gen(rd()); // Generador de números aleatorios basado en random_device
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f); // Distribución uniforme entre 0 y 1
+
+    // Generar colores aleatorios
+    red = dis(gen);
+    green = dis(gen);
+    blue = dis(gen);
     scale=1.0f;
 }
 
@@ -29,6 +36,7 @@ void Circle::PositionOfVertices(float* vertices) {
         vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
     }
 }
+
 void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
 
     switch (GLFW_KEY)
@@ -75,4 +83,7 @@ GLfloat Circle::GetScale(){
 }
 int Circle::GetNumOfSegments(){
     return numSegments;
+}
+Circle::~Circle(){
+
 }

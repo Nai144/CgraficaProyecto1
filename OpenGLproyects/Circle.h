@@ -15,11 +15,12 @@ class Circle{
     public:
 
     Circle();
-    Circle(int _numSegments, float _radio,float _red, float _green, float _blue);
+    Circle(int _numSegments, float _radio);
 
     void PositionOfVertices(float* vertices);
     void ModifyColor(int GLFW_KEY, int vertexColorLocation);
     void Scale(GLuint uniID, int op);
+
     GLfloat GetScale();
     int GetNumOfSegments();
     ~Circle();

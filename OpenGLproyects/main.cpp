@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
 #include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <ctime>
 #include <cmath>
 #include "Circle.h"
 #include "OpenGlShadder.h"
@@ -9,6 +12,8 @@
 using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
+//nuevo
+int readNumberOfCircles(const std::string& fileName); 
 
 
 // settings
@@ -19,11 +24,12 @@ int vertexColorLocation;
 
 GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
-Circle circle(30, 0.125f, 1.0f, 0.0f, 0.0f); 
-int numCircles = 16; // Número de círculos a dibujar
+Circle circle(30, 0.125f); 
+int numCircles; // Número de círculos a dibujar
 
 int main(int argc, char *argv[])
 {
+    numCircles= readNumberOfCircles("ENTRADA.TXT");
     // glfw: initialize and configure
     // ------------------------------
     if (!glfwInit())
@@ -173,4 +179,12 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+int readNumberOfCircles(const std::string& fileName) {
+    std::ifstream file(fileName);
+    int N;
+    file >> N;
+    file.close();
+    return N;
 }
