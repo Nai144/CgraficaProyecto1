@@ -18,19 +18,15 @@ Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _
     scale=1.0f;
 }
 
-void Circle::PositionOfVertices(float* vertices, int numCircles, float offsetX, float offsetY) {
+void Circle::PositionOfVertices(float* vertices) {
     int vertexIndex = 0;
-    for (int i = 0; i < numCircles; ++i) {
-        float xOffset = (i % 3) * offsetX;  // Ajustar la posición en X
-        float yOffset = (i / 3) * offsetY;  // Ajustar la posición en Y
-        for (int j = 0; j < numSegments; ++j) {
-            float theta = 2.0f * 3.1415926f * float(j) / float(numSegments);
-            float x = radius * cosf(theta);
-            float y = radius * sinf(theta);
-            vertices[vertexIndex++] = x + xOffset;
-            vertices[vertexIndex++] = y + yOffset;
-            vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
-        }
+    for (int j = 0; j < numSegments; ++j) {
+        float theta = 2.0f * 3.1415926f * float(j) / float(numSegments);
+        float x = radius * cosf(theta);
+        float y = radius * sinf(theta);
+        vertices[vertexIndex++] = x;
+        vertices[vertexIndex++] = y;
+        vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
     }
 }
 void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){

@@ -17,9 +17,10 @@ const unsigned int SCR_HEIGHT = 920;
 const char *vertexShaderSource ="#version 410 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "uniform float scale;\n"
+    "uniform vec2 offset;\n"
     "void main()\n"
     "{\n"
-    "gl_Position = vec4(aPos*scale, 1.0);\n"
+    "gl_Position = vec4(aPos * scale + vec3(offset, 0.0), 1.0);\n"
     "}\n\0";
 
 const char *fragmentShaderSource = "#version 410 core\n"
@@ -32,8 +33,9 @@ const char *fragmentShaderSource = "#version 410 core\n"
 unsigned int shaderProgram;
 GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
-Circle circle(30,0.25f,1.0f,0.0f,0.0f); 
+Circle circle(30, 0.125f, 1.0f, 0.0f, 0.0f); 
 int numCircles = 16; // Número de círculos a dibujar
+
 int main(int argc, char *argv[])
 {
     // glfw: initialize and configure
@@ -42,14 +44,13 @@ int main(int argc, char *argv[])
     {
         std::cout << "Failed to initialize GLFW" << std::endl;
         return -1;
-    }else{
-        std::cout << "si inicialiso GLFW" << std::endl;
+    } else {
+        std::cout << "si inicializo GLFW" << std::endl;
     }
-    glfwInit();
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
 
     // glfw window creation
     // --------------------
@@ -72,7 +73,6 @@ int main(int argc, char *argv[])
     }
 
     glfwSetKeyCallback(window, glfw_onKey);
-
 
     // build and compile our shader program
     // ------------------------------------
@@ -114,30 +114,39 @@ int main(int argc, char *argv[])
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
 
-    int numVertices = circle.GetNumOfSegments() * numCircles;
+    int numVertices = circle.GetNumOfSegments();
     float* vertices = new float[numVertices * 3];
-    circle.PositionOfVertices(vertices, numCircles, 0.5f, 0.5f);
+    circle.PositionOfVertices(vertices);
 
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, IBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &IBO);  // Generate IBO
+
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, numVertices * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
-   
+
+    unsigned int* indices = new unsigned int[numCircles * circle.GetNumOfSegments()];
+    for (int i = 0; i < numCircles; ++i) {
+        for (int j = 0; j < circle.GetNumOfSegments(); ++j) {
+            indices[i * circle.GetNumOfSegments() + j] = j;
+        }
+    }
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, numCircles * circle.GetNumOfSegments() * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glBindVertexArray(VAO);
-    
     uniID = glGetUniformLocation(shaderProgram, "scale");
     printf("uniID: %d\n", uniID);
     int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
     printf("ourColor: %d\n", vertexColorLocation);
- 
+
     while (!glfwWindowShouldClose(window))
     {
         // render
@@ -147,33 +156,31 @@ int main(int argc, char *argv[])
         // be sure to activate the shader before any calls to glUniform
         glUseProgram(shaderProgram);
         glUniform1f(uniID, circle.GetScale());
-        //colorTriangle();
         // update shader uniform
-        circle.ModifyColor(0,glGetUniformLocation(shaderProgram, "ourColor"));
-                // render the triangle   
+        circle.ModifyColor(0, vertexColorLocation);
+
+        // render the circles
+        glBindVertexArray(VAO);
         for (int i = 0; i < numCircles; ++i) {
-            glDrawArrays(GL_TRIANGLE_FAN, i * circle.GetNumOfSegments(), circle.GetNumOfSegments());
+            float offsetX = (i % 3) * 0.25f - 0.5f;
+            float offsetY = (i / 3) * 0.25f- 0.5f;
+            glUniform2f(glGetUniformLocation(shaderProgram, "offset"), offsetX, offsetY);
+            glDrawElements(GL_TRIANGLE_FAN, circle.GetNumOfSegments(), GL_UNSIGNED_INT, 0);
         }
-       
-        //glDrawElements(GL_TRIANGLE_FAN, 12, circle.GetNumOfSegments(),0);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-
-    //lineas para eliminar el segundo triangulo 
- //   glDeleteVertexArrays(1, &VAO2);
-   // glDeleteBuffers(1, &VBO2);
-    //
-
+    glDeleteBuffers(1, &IBO);
+    delete[] vertices;
+    delete[] indices;
     glDeleteProgram(shaderProgram);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwTerminate();
     return 0;
 }

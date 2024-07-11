@@ -18,7 +18,7 @@ class Circle{
     Circle();
     Circle(int _numSegments, float _radio,float _red, float _green, float _blue);
 
-    void PositionOfVertices(float* vertices, int numCircles, float offsetX, float offsetY);
+    void PositionOfVertices(float* vertices);
     void ModifyColor(int GLFW_KEY, int vertexColorLocation);
     void Scale(GLuint uniID, int op);
     GLfloat GetScale();
