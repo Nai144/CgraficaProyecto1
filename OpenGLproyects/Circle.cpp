@@ -18,21 +18,17 @@ Circle::Circle(int _numSegments, float _radius,float _red, float _green, float _
     scale=1.0f;
 }
 
-//funcion con la formula de poner las posiciones de los vertices
-void Circle::PositionOfVertices(float vertices[]){
-
-    
-    for (int i = 0; i < numSegments; ++i) {
-        float theta = 2.0f * 3.1415926f * float(i) / float(numSegments);
+void Circle::PositionOfVertices(float* vertices) {
+    int vertexIndex = 0;
+    for (int j = 0; j < numSegments; ++j) {
+        float theta = 2.0f * 3.1415926f * float(j) / float(numSegments);
         float x = radius * cosf(theta);
         float y = radius * sinf(theta);
-        vertices[i * 3] = x;
-        vertices[i * 3 + 1] = y;
-        vertices[i * 3 + 2] = 0.0f; // Z coordinate is 0 for 2D drawing
+        vertices[vertexIndex++] = x;
+        vertices[vertexIndex++] = y;
+        vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
     }
-
 }
-//Modificacion de los colores en base a la tecla que se presione
 void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
 
     switch (GLFW_KEY)
@@ -65,24 +61,18 @@ void Circle::ModifyColor(int GLFW_KEY,int vertexColorLocation){
         break;
     }
     
+
     glUniform4f( vertexColorLocation,red , green, blue, 1.0f);
 }
-
-//Modifica la escala del circulo
 void Circle::Scale(GLuint uniID,int op){
     
     GLfloat aumento=0.1f;
     scale += op*aumento;
     glUniform1f(uniID, scale);
 }
-//Retorna la escala del circulo
 GLfloat Circle::GetScale(){
     return scale;
 }
-//Retorna la cantidad de segmentos que tiene el circulo
 int Circle::GetNumOfSegments(){
     return numSegments;
-}
-Circle::~Circle(){
-    
 }
