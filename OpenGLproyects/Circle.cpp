@@ -17,7 +17,7 @@ Circle::Circle(int _numSegments, float _radius){
     std::mt19937 gen(rd()); // Generador de números aleatorios basado en random_device
     std::uniform_real_distribution<float> dis(0.0f, 1.0f); // Distribución uniforme entre 0 y 1
 
-    // Generar colores aleatorios
+    // Generar colores random
     red = dis(gen);
     green = dis(gen);
     blue = dis(gen);
@@ -33,7 +33,8 @@ void Circle::PositionOfVertices(float* vertices) {
         vertices[vertexIndex++] = x;
         vertices[vertexIndex++] = y;
         vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
-
+        
+        //coordenadas texturas
         float u = (cosf(theta) + 1.0f) / 2.0f;
         float v = (sinf(theta) + 1.0f) / 2.0f;
         vertices[vertexIndex++] = u;
@@ -89,15 +90,6 @@ int Circle::GetNumOfSegments(){
     return numSegments;
 }
 
-float Circle::GetRed(){
-    return red;
-}
-float Circle::GetGreen(){
-    return red;
-}
-float Circle::GetBlue(){
-    return red;
-}
 
 Circle::~Circle(){
 

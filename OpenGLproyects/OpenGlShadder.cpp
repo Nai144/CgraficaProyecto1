@@ -9,41 +9,41 @@
 
 OpenGlShadder::OpenGlShadder(){
 
-const char *vertexShaderSource = R"glsl(
-#version 330 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec2 aTexCoord;
+    const char *vertexShaderSource = R"glsl(
+    #version 330 core
+    layout(location = 0) in vec3 aPos;
+    layout(location = 1) in vec2 aTexCoord;
 
-out vec2 TexCoord;
-uniform vec2 offset;
-uniform float scale;
+    out vec2 TexCoord;
+    uniform vec2 offset;
+    uniform float scale;
 
-void main() {
-    gl_Position = vec4(scale * (aPos.xy + offset), 0.0, 1.0);
-    TexCoord = aTexCoord;
-}
-)glsl";
-
-const char *fragmentShaderSource = R"glsl(
-#version 330 core
-out vec4 FragColor;
-
-in vec2 TexCoord;
-
-uniform sampler2D texture1;
-uniform vec4 ourColor;
-uniform bool tex;
-
-void main() {
-    vec4 texColor = texture(texture1, TexCoord);
-    if(tex){
-        FragColor = texColor*ourColor;
-    }else{
-        FragColor = ourColor;
+    void main() {
+        gl_Position = vec4(scale * (aPos.xy + offset), 0.0, 1.0);
+        TexCoord = aTexCoord;
     }
-    
-}
-)glsl";
+    )glsl";
+
+    const char *fragmentShaderSource = R"glsl(
+    #version 330 core
+    out vec4 FragColor;
+
+    in vec2 TexCoord;
+
+    uniform sampler2D texture1;
+    uniform vec4 ourColor;
+    uniform bool tex;
+
+    void main() {
+        vec4 texColor = texture(texture1, TexCoord);
+        if(tex){
+            FragColor = texColor*ourColor;
+        }else{
+            FragColor = ourColor;
+        }
+
+    }
+    )glsl";
 
     
     // build and compile our shader program
@@ -96,18 +96,18 @@ void main() {
 }
 
 void OpenGlShadder::loadTextures() {
+    
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    loadTextureFromFile("./imagenes/wall.jpg", texture1);
-
-        
+    loadTextureFromFile("./imagenes/wall.jpg", texture1);      
 }
 
 void OpenGlShadder::loadTextureFromFile(const char* path, GLuint& textureID) {
+    
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
@@ -127,13 +127,14 @@ void OpenGlShadder::loadTextureFromFile(const char* path, GLuint& textureID) {
         std::cout << "Failed to load texture: " << path << std::endl;
     }
     stbi_image_free(data);
+
 }
 
 void OpenGlShadder::Use(GLfloat circleScale){
     // asegÃºrese de activar el sombreador antes de cualquier llamada a glUniform
     glUseProgram(shaderProgram);
     glUniform1f(glGetUniformLocation(shaderProgram, "scale"), circleScale);
-    glUniform1f(glGetUniformLocation(shaderProgram, "tex"), true);
+    
 }
 //
 GLuint OpenGlShadder::GetID(){
@@ -152,11 +153,7 @@ void OpenGlShadder::DeleteProgram(){
     glDeleteProgram(shaderProgram);
 }
 
-void OpenGlShadder::UseLocation(int offsetX, int offsetY)
-{   
-    glUniform2f(glGetUniformLocation(shaderProgram, "offset"), offsetX, offsetY);
 
-}
 
 int OpenGlShadder::GetIDOffset(){
     return glGetUniformLocation(shaderProgram, "offset");

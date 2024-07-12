@@ -20,6 +20,5 @@ class OpenGlShadder{
     int GetIDColor();
     GLuint GetIDTexture();
     int GetIDtrue();
-    void UseLocation(int offsetX, int offsetY);
     int GetIDOffset();
 };
