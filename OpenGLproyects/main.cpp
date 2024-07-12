@@ -26,7 +26,7 @@ GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
 Circle circle(30, 0.125f); 
 int numCircles; // Número de círculos a dibujar
-
+float offset=0;
 int main(int argc, char *argv[])
 {
     numCircles= readNumberOfCircles("ENTRADA.TXT");
@@ -122,9 +122,10 @@ int main(int argc, char *argv[])
 
         // render the circles
         glBindVertexArray(VAO);
+        
         for (int i = 0; i < numCircles; ++i) {
-            float offsetX = (i % 3) * 0.25f - 0.5f;
-            float offsetY = (i / 3) * 0.25f- 0.5f;
+            float offsetX = (i % 3) * (0.25f+offset) - 0.5f;
+            float offsetY = (i / 3) * (0.25f+offset)- 0.5f;
             //shader.UseLocation(offsetX,offsetY);
             glUniform2f(shader.GetIDOffset(), offsetX, offsetY);
             glDrawElements(GL_TRIANGLE_FAN, circle.GetNumOfSegments(), GL_UNSIGNED_INT, 0);
@@ -167,6 +168,8 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
     
     if (key == GLFW_KEY_B && action == GLFW_RELEASE)
         circle.Scale(uniID,-1);
+
+    offset+=((key == GLFW_KEY_A && action == GLFW_RELEASE))? 0.025f: ((key == GLFW_KEY_B && action == GLFW_RELEASE))? -0.025f:0;
 
 }
 

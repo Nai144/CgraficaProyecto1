@@ -20,7 +20,7 @@ class Circle{
     void PositionOfVertices(float* vertices);
     void ModifyColor(int GLFW_KEY, int vertexColorLocation);
     void Scale(GLuint uniID, int op);
-
+    
     GLfloat GetScale();
     int GetNumOfSegments();
     ~Circle();
