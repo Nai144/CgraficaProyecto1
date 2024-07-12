@@ -32,10 +32,16 @@ in vec2 TexCoord;
 
 uniform sampler2D texture1;
 uniform vec4 ourColor;
+uniform bool tex;
 
 void main() {
     vec4 texColor = texture(texture1, TexCoord);
-    FragColor = texColor * ourColor;
+    if(tex){
+        FragColor = texColor*ourColor;
+    }else{
+        FragColor = ourColor;
+    }
+    
 }
 )glsl";
 
@@ -127,6 +133,7 @@ void OpenGlShadder::Use(GLfloat circleScale){
     // asegÃºrese de activar el sombreador antes de cualquier llamada a glUniform
     glUseProgram(shaderProgram);
     glUniform1f(glGetUniformLocation(shaderProgram, "scale"), circleScale);
+    glUniform1f(glGetUniformLocation(shaderProgram, "tex"), true);
 }
 //
 GLuint OpenGlShadder::GetID(){
@@ -137,6 +144,9 @@ GLuint OpenGlShadder::GetIDTexture(){
 }
 int OpenGlShadder::GetIDColor(){
     return glGetUniformLocation(shaderProgram, "ourColor");
+}
+int OpenGlShadder::GetIDtrue(){
+    return glGetUniformLocation(shaderProgram, "tex");
 }
 void OpenGlShadder::DeleteProgram(){
     glDeleteProgram(shaderProgram);

@@ -107,17 +107,19 @@ int main(int argc, char *argv[])
         
         for (int i = 0; i < numCircles; ++i) 
         {
-            float offsetX = (i % 3) * (0.25f + offset) - 0.5f;
-            float offsetY = (i / 3) * (0.25f + offset) - 0.5f;
+            float offsetX = (i % 3) * 0.25f - 0.5f;
+            float offsetY = (i / 3) * 0.25f  - 0.5f;
             glUniform2f(shader.GetIDOffset(), offsetX, offsetY);
             
             if (i == 0 || i == numCircles - 1) 
             {
+                glUniform1f(shader.GetIDtrue(), true);
                 glBindTexture(GL_TEXTURE_2D, shader.GetIDTexture());
             } 
             else 
             {
-                glBindTexture(GL_TEXTURE_2D, 0); // Sin textura
+                glUniform1f(shader.GetIDtrue(), false);
+                //glBindTexture(GL_TEXTURE_2D, 0); // Sin textura
                 
                 
             }

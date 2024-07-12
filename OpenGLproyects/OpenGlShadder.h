@@ -7,6 +7,8 @@ class OpenGlShadder{
 
     unsigned int shaderProgram;
     GLuint texture1;
+    bool tex;
+
     public:
 
     OpenGlShadder();
@@ -17,6 +19,7 @@ class OpenGlShadder{
     GLuint GetID();
     int GetIDColor();
     GLuint GetIDTexture();
+    int GetIDtrue();
     void UseLocation(int offsetX, int offsetY);
     int GetIDOffset();
 };
