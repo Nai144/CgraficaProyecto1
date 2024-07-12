@@ -135,7 +135,11 @@ int main(int argc, char *argv[])
 
             glUniform2f(shader.GetIDOffset(), offsetX, offsetY);
             
-            glBindTexture(GL_TEXTURE_2D, shader.GetIDTexture());
+            if (i == 0 || i == numCircles - 1) {
+                glBindTexture(GL_TEXTURE_2D, shader.GetIDTexture());
+            } else {
+                glBindTexture(GL_TEXTURE_2D, 0); // Sin textura
+            }
 
             glDrawElements(GL_TRIANGLE_FAN, circle.GetNumOfSegments(), GL_UNSIGNED_INT, 0);
         }

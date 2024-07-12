@@ -96,7 +96,7 @@ void OpenGlShadder::loadTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    loadTextureFromFile("./imagenes/wall.jpe    g", texture1);
+    loadTextureFromFile("./imagenes/wall.jpg", texture1);
 
         
 }
