@@ -24,7 +24,6 @@ GLuint uniID, ourColorID;
 GLfloat escala = 1.0f, aumento = 0.1f;
 Circle circle(30, 0.125f); 
 int numCircles; 
-float offset = 0;
 
 int main(int argc, char *argv[])
 {
@@ -101,28 +100,23 @@ int main(int argc, char *argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.Use(circle.GetScale());
-        //circle.ModifyColor(0, vertexColorLocation);
 
         glBindVertexArray(VAO);
-        
+
+        glBindTexture(GL_TEXTURE_2D, shader.GetIDTexture());
+
         for (int i = 0; i < numCircles; ++i) 
         {
-            float offsetX = (i % 3) * 0.25f - 0.5f;
-            float offsetY = (i / 3) * 0.25f  - 0.5f;
+            int n=numCircles/3;
+            float offsetX = (i % n) * 0.25f - 0.3f;
+            float offsetY = (i / n) * 0.25f  - 0.3f;
             glUniform2f(shader.GetIDOffset(), offsetX, offsetY);
             
             if (i == 0 || i == numCircles - 1) 
-            {
-                glUniform1f(shader.GetIDtrue(), true);
-                glBindTexture(GL_TEXTURE_2D, shader.GetIDTexture());
-            } 
+                glUniform1f(shader.GetIDtrue(), true); 
             else 
-            {
                 glUniform1f(shader.GetIDtrue(), false);
-                //glBindTexture(GL_TEXTURE_2D, 0); // Sin textura
-                
-                
-            }
+
             circle.ModifyColor(0,vertexColorLocation);
             //glUniform4fv(circles[i].getOurColorID(), 1, circles[i].getCurrentColor());
             glDrawElements(GL_TRIANGLE_FAN, circle.GetNumOfSegments(), GL_UNSIGNED_INT, 0);
@@ -164,7 +158,7 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
     if (key == GLFW_KEY_B && action == GLFW_RELEASE)
         circle.Scale(uniID, -1);
 
-    offset += ((key == GLFW_KEY_A && action == GLFW_RELEASE)) ? 0.025f : ((key == GLFW_KEY_B && action == GLFW_RELEASE)) ? -0.025f : 0;
+    
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

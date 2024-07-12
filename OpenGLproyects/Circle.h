@@ -26,11 +26,6 @@ class Circle{
     GLfloat GetScale();
     int GetNumOfSegments();
 
-    float GetRed();
-    float GetGreen();
-    float GetBlue();
-
-
     ~Circle();
 
 
