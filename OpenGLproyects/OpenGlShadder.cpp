@@ -4,24 +4,40 @@
 #include "glad/glad.h"
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image/stb_image.h"
+
 OpenGlShadder::OpenGlShadder(){
 
-const char *vertexShaderSource ="#version 410 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform float scale;\n"
-    "uniform vec2 offset;\n"
-    "void main()\n"
-    "{\n"
-    "gl_Position = vec4(aPos * scale + vec3(offset, 0.0), 1.0);\n"
-    "}\n\0";
+const char *vertexShaderSource = R"glsl(
+#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec2 aTexCoord;
 
-const char *fragmentShaderSource = "#version 410 core\n"
-    "out vec4 FragColor;\n"
-    "uniform vec4 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = ourColor;\n"
-    "}\n\0";
+out vec2 TexCoord;
+uniform vec2 offset;
+uniform float scale;
+
+void main() {
+    gl_Position = vec4(scale * (aPos.xy + offset), 0.0, 1.0);
+    TexCoord = aTexCoord;
+}
+)glsl";
+
+const char *fragmentShaderSource = R"glsl(
+#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoord;
+
+uniform sampler2D texture1;
+uniform vec4 ourColor;
+
+void main() {
+    vec4 texColor = texture(texture1, TexCoord);
+    FragColor = texColor * ourColor;
+}
+)glsl";
 
     
     // build and compile our shader program
@@ -73,6 +89,40 @@ const char *fragmentShaderSource = "#version 410 core\n"
 
 }
 
+void OpenGlShadder::loadTextures() {
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    loadTextureFromFile("./imagenes/wall.jpe    g", texture1);
+
+        
+}
+
+void OpenGlShadder::loadTextureFromFile(const char* path, GLuint& textureID) {
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    if (data) {
+        GLenum format;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else if (nrChannels == 4)
+            format = GL_RGBA;
+
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        std::cout << "Failed to load texture: " << path << std::endl;
+    }
+    stbi_image_free(data);
+}
+
 void OpenGlShadder::Use(GLfloat circleScale){
     // asegÃºrese de activar el sombreador antes de cualquier llamada a glUniform
     glUseProgram(shaderProgram);
@@ -81,6 +131,9 @@ void OpenGlShadder::Use(GLfloat circleScale){
 //
 GLuint OpenGlShadder::GetID(){
     return glGetUniformLocation(shaderProgram, "scale");
+}
+GLuint OpenGlShadder::GetIDTexture(){
+    return texture1;
 }
 int OpenGlShadder::GetIDColor(){
     return glGetUniformLocation(shaderProgram, "ourColor");

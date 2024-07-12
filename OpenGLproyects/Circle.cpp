@@ -33,6 +33,11 @@ void Circle::PositionOfVertices(float* vertices) {
         vertices[vertexIndex++] = x;
         vertices[vertexIndex++] = y;
         vertices[vertexIndex++] = 0.0f; // Coordenada Z para dibujo 2D
+
+        float u = (cosf(theta) + 1.0f) / 2.0f;
+        float v = (sinf(theta) + 1.0f) / 2.0f;
+        vertices[vertexIndex++] = u;
+        vertices[vertexIndex++] = v;
     }
 }
 

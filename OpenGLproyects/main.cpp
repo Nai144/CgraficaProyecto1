@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
     float* vertices = new float[numVertices * 3];
     circle.PositionOfVertices(vertices);
 
+    shader.loadTextures();
+
     unsigned int VBO, VAO, IBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -84,7 +86,7 @@ int main(int argc, char *argv[])
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * 3 * sizeof(float), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * 5 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 /*
     unsigned int* indices = new unsigned int[numCircles * circle.GetNumOfSegments()];
@@ -99,10 +101,11 @@ int main(int argc, char *argv[])
         indices[j] = j;
     }
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, numCircles * circle.GetNumOfSegments() * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-     glBufferData(GL_ELEMENT_ARRAY_BUFFER, circle.GetNumOfSegments() * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, circle.GetNumOfSegments() * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     uniID = shader.GetID();
     printf("uniID: %d\n", uniID);
@@ -127,7 +130,13 @@ int main(int argc, char *argv[])
             float offsetX = (i % 3) * (0.25f+offset) - 0.5f;
             float offsetY = (i / 3) * (0.25f+offset)- 0.5f;
             //shader.UseLocation(offsetX,offsetY);
+
+            
+
             glUniform2f(shader.GetIDOffset(), offsetX, offsetY);
+            
+            glBindTexture(GL_TEXTURE_2D, shader.GetIDTexture());
+
             glDrawElements(GL_TRIANGLE_FAN, circle.GetNumOfSegments(), GL_UNSIGNED_INT, 0);
         }
 
