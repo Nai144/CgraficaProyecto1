@@ -88,6 +88,17 @@ GLfloat Circle::GetScale(){
 int Circle::GetNumOfSegments(){
     return numSegments;
 }
+
+float Circle::GetRed(){
+    return red;
+}
+float Circle::GetGreen(){
+    return red;
+}
+float Circle::GetBlue(){
+    return red;
+}
+
 Circle::~Circle(){
 
 }

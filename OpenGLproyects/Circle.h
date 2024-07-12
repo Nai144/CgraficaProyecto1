@@ -17,12 +17,20 @@ class Circle{
     Circle();
     Circle(int _numSegments, float _radio);
 
+    
+
     void PositionOfVertices(float* vertices);
     void ModifyColor(int GLFW_KEY, int vertexColorLocation);
     void Scale(GLuint uniID, int op);
     
     GLfloat GetScale();
     int GetNumOfSegments();
+
+    float GetRed();
+    float GetGreen();
+    float GetBlue();
+
+
     ~Circle();
 
 
